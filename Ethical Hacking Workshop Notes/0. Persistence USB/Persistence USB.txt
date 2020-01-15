@@ -1,0 +1,32 @@
+//Boot the Kali Live usb
+//Open Terminal and type in following commands
+
+fdisk -l
+
+fdisk /dev/sdb
+
+//Press 'n'
+
+//Press 'Enter' 4 times
+
+//Press 'w'
+
+//Note: 3 in sdb3 used below will vary depending on the partition number. Check yours
+mkfs.ext4 -L persistence /dev/sdb3
+e2label /dev/sdb3 persistence
+
+mkdir -p /mnt/anonymous
+mount /dev/sdb3 /mnt/anonymous
+
+echo "/ union" > /mnt/anonymous/persistence.conf
+umount /dev/sdb3
+
+reboot
+
+//Done. After reaching the Boot screen  select the 3rd Option from the list "persistence"
+//If you get stuck in middle of some screen for long time, try force shutdown and boot again
+//This time go to the 3rd option but dont press 'Enter', Press the 'e' key
+
+//Add the following words before the word 'splash' in the sentence
+nouveau.modeset=0 
+//Press F10 to boot. This time you'll boot up successfully

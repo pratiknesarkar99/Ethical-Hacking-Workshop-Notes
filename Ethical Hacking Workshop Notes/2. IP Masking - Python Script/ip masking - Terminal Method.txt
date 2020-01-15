@@ -1,0 +1,9 @@
+//Make sure you have Tor browser Installed on your kali machine
+//Open the folder IP Masking and right click inside the folder
+//Select open in terminal. Type the command 
+
+chmod +x toriptables2.py
+
+./toriptables2.py
+
+//Done

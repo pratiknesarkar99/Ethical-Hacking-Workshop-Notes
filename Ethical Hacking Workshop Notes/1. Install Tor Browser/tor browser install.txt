@@ -1,0 +1,25 @@
+//Download the zip for Linux 64-bit from Tor downloads and copy it to Home Dir
+//Open Terminal
+
+ls
+
+cd tor-browser-linux64-9.0.4_en-US/
+
+chown -R root:root tor-browser_en-US/
+
+cd tor-browser_en-US/
+
+cd Browser/
+
+leafpad start-tor-browser
+
+*** Press [Ctrl + F]. Type 'root' Find root and put # before the 4 lines where you find root ***
+
+apt install alacarte
+
+//M
+ls
+
+./start-tor-browser.desktop 
+
+Launching './Browser/start-tor-browser --detach'...

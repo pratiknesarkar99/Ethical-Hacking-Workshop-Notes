@@ -1,0 +1,33 @@
+Armitage Tutorial
+
+//GUI Method of Metasploit
+
+//Download Armitage
+
+kali apt-get install armitage
+//or
+http://www.fastandeasyhacking.com/
+
+//Start Metasploit
+
+service postgresql start
+msfconsole
+
+//Start Armitage. Armitage uses a client/server architecture where Metasploit is the server and Armitage is the client. 
+
+armitage
+
+//Enter remote IP and Port no 
+//Start the RPC Server
+
+Explore Armitage
+
+//Notice in the upper left-hand corner of the Armitage screen, you can see folders. These folders contain four types of Metasploit modules;
+auxiliary
+exploit
+payload
+post
+
+Hail Mary!
+The Hail Mary is where Armitage will throw every exploit it has against a site to see whether any of them work.
+go to the "Attacks" menu at the top of Armitage and select "Hail Mary." 

@@ -1,0 +1,35 @@
+//To make your Terminal look Cool with custom header.
+//Open Terminal
+
+sudo apt-get install figlet
+figlet --help
+
+//For Fonts
+git clone https://github.com/busyloop/lolcat
+cd lolcat/bin/
+ls
+
+gem install lolcat
+lolcat --help
+
+cd /
+showfigfonts
+
+//More Fonts
+cd /usr/share
+git clone https://github.com/xero/figlet-fonts
+mv figlet-fonts/* figlet && rm -rf figlet-fonts
+showfigfonts
+
+figlet -f [font name] "Text to display"
+
+//Type this to edit the Terminal Code of your machine
+leafpad /etc/bash.bashrc
+
+//Add the following line with your own custom option choice at the end of the file in notepad
+figlet -f [font name] "Text to display"
+//or
+echo "Text to Display" | lolcat -a -d 500
+
+//Save the Notepad file, and open new terminal. 
+//Done

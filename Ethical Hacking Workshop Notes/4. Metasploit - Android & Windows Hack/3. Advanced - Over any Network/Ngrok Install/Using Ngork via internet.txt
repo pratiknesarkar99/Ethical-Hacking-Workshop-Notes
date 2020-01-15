@@ -1,0 +1,11 @@
+//Download ngork from the website
+//then follw the instructions on the website to configure it
+
+//Step 1, 2, 3, 4
+
+//Copy the 'ngrok' file to the Home folder. Right click in the folder and select 'Open the Terminal'
+//Type the following
+
+./ngork tcp "port"
+
+//Done

